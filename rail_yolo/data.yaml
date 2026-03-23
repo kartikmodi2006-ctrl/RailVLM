@@ -1,0 +1,9 @@
+path: ../rail_yolo
+train: images/train
+val: images/valid
+test: images/test
+
+nc: 2
+names:
+  0: Defective
+  1: Non defective

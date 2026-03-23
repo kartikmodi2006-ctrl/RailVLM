@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailVLM - AI Railway Fault Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Rail<span>VLM</span></h1>
+            <p>Intelligent Railway Fault Detection &amp; Explainability</p>
+        </header>
+
+        <main>
+            <!-- Upload Section -->
+            <section class="upload-section glass-panel">
+                <div class="upload-area" id="drop-zone">
+                    <input type="file" id="image-input" accept="image/*" hidden>
+                    <div class="upload-content">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                        </svg>
+                        <p>Drag &amp; Drop a railway track image</p>
+                        <button class="btn primary-btn" onclick="document.getElementById('image-input').click()">Browse Files</button>
+                    </div>
+                </div>
+                <div id="preview-container" class="hidden">
+                    <img id="image-preview" src="" alt="Preview">
+                    <button class="btn action-btn" id="analyze-btn">Analyze Track</button>
+                    <button class="btn secondary-btn" id="reset-btn">Change Image</button>
+                </div>
+            </section>
+
+            <!-- Loading -->
+            <div id="loading" class="hidden glass-panel">
+                <div class="spinner"></div>
+                <p>Analyzing track with YOLOv8...</p>
+            </div>
+
+            <!-- Results Section -->
+            <section id="results-section" class="hidden">
+
+                <!-- Verdict Banner -->
+                <div id="verdict-banner" class="verdict-banner glass-panel">
+                    <div class="verdict-left">
+                        <div id="verdict-icon" class="verdict-icon">⚠️</div>
+                        <div>
+                            <div id="verdict-label" class="verdict-label">ANALYZING</div>
+                            <div id="verdict-sub" class="verdict-sub">Railway Track Assessment</div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <!-- Images -->
+                <div class="results-grid">
+                    <div class="result-card glass-panel">
+                        <h2>Detection Results <span class="badge" id="top5-badge">Top 5 detections</span></h2>
+                        <div class="img-wrapper">
+                            <img id="annotated-result" src="" alt="Annotated">
+                        </div>
+                        <p class="img-caption">Red boxes = Defective regions &nbsp;|&nbsp; Green boxes = Safe regions</p>
+                    </div>
+                    <div class="result-card glass-panel">
+                        <h2>AI Attention Map <span class="badge">XAI Heatmap</span></h2>
+                        <div class="img-wrapper">
+                            <img id="heatmap-result" src="" alt="Heatmap">
+                        </div>
+                        <p class="img-caption">Warm colors (🔴) = High AI focus &nbsp;|&nbsp; Cool colors (🔵) = Low focus</p>
+                    </div>
+                </div>
+
+                <!-- Explanations -->
+                <div class="explanations-container glass-panel" id="explanations">
+                    <h2>Fault Analysis <span class="badge">Top defective regions</span></h2>
+                    <div id="explanation-list"></div>
+                </div>
+
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by YOLOv8 &amp; FastAPI &nbsp;|&nbsp; RailVLM Fault Detection System</p>
+        </footer>
+    </div>
+    <script src="script.js?v=4"></script>
+</body>
+</html>

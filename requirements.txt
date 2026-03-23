@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+ultralytics
+transformers
+torch
+torchvision
+grad-cam
+opencv-python
+Pillow
+einops
+numpy
+accelerate
