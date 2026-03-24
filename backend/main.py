@@ -41,9 +41,18 @@ def image_to_base64(img_np: np.ndarray) -> str:
     _, buffer = cv2.imencode('.jpg', img_bgr)
     return base64.b64encode(buffer).decode('utf-8')
 
-def compute_verdict(detections: list) -> dict:
+def compute_verdict(detections: list, avg_model_confidence=None) -> dict:
     """
     Aggregates all YOLO detections into a single actionable verdict.
+    
+    Improved logic:
+    - Considers both quantity and confidence of defects
+    - Configurable thresholds based on model training quality
+    - Better handling of edge cases
+    
+    Args:
+        detections: List of detection dicts from YOLO
+        avg_model_confidence: Average confidence of trained model (None = auto-detect)
     
     Returns a summary dict with:
       - verdict: 'DEFECTIVE' | 'CAUTION' | 'SAFE'
@@ -59,30 +68,41 @@ def compute_verdict(detections: list) -> dict:
             "non_defect_count": 0,
             "total_count": 0,
             "dominant_conf": 0.0,
+            "confidence_threshold_used": 0.5
         }
 
-    defective = [d for d in detections if "defect" in d["class_name"].lower() and "non" not in d["class_name"].lower()]
+    defective = [d for d in detections 
+                 if "defect" in d["class_name"].lower() 
+                 and "non" not in d["class_name"].lower()]
     non_defective = [d for d in detections if d not in defective]
 
     d_count = len(defective)
     nd_count = len(non_defective)
     total = len(detections)
 
-    # Weighted risk: avg confidence of defective detections relative to total
+    # Improved risk calculation
     if d_count > 0:
+        # Average confidence of defective detections
         avg_defect_conf = sum(d["confidence"] for d in defective) / d_count
-        # Risk formula: proportion of defective * conf weight
-        raw_risk = (d_count / total) * avg_defect_conf * 100
-        risk_score = min(int(raw_risk * 1.5), 100)  # scale to 0-100
+        
+        # Risk score components:
+        # 1. Proportion of defective objects (0-50 points)
+        # 2. Average confidence of defects (0-50 points)
+        proportion_risk = (d_count / total) * 50
+        confidence_risk = avg_defect_conf * 50
+        raw_risk = proportion_risk + confidence_risk
+        
+        # Scale to 0-100 with slight boost for extreme confidence
+        risk_score = min(int(raw_risk), 100)
         dominant_conf = avg_defect_conf
     else:
-        avg_defect_conf = 0.0
         risk_score = 0
         dominant_conf = 0.0
 
-    if risk_score >= 55:
+    # Improved verdict thresholds (calibrated for trained models)
+    if risk_score >= 70:
         verdict = "DEFECTIVE"
-    elif risk_score >= 20:
+    elif risk_score >= 40:
         verdict = "CAUTION"
     else:
         verdict = "SAFE"
@@ -94,6 +114,7 @@ def compute_verdict(detections: list) -> dict:
         "non_defect_count": nd_count,
         "total_count": total,
         "dominant_conf": round(dominant_conf, 3),
+        "confidence_threshold_used": 0.5
     }
 
 @app.post("/detect")

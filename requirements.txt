@@ -1,13 +1,32 @@
-fastapi
-uvicorn
-python-multipart
-ultralytics
-transformers
-torch
-torchvision
-grad-cam
-opencv-python
-Pillow
-einops
-numpy
-accelerate
+# Core Deep Learning
+torch==2.0.1  # PyTorch - pinned for stability
+torchvision==0.15.2  # For vision utilities
+ultralytics==8.0.202  # YOLOv8 - latest stable
+
+# Web Framework
+fastapi>=0.104.0  # FastAPI web framework
+uvicorn>=0.24.0  # ASGI server
+python-multipart>=0.0.6  # File upload support
+
+# Vision & Image Processing
+opencv-python>=4.8.0  # OpenCV for image processing
+Pillow>=10.0.0  # PIL for image manipulation
+scikit-image>=0.22.0  # Additional image processing utilities
+
+# ML & Data Processing
+numpy>=1.24.0  # Numerical computing
+scipy>=1.11.0  # Scientific computing
+transformers>=4.30.0  # Hugging Face transformers (for potential VLM upgrades)
+
+# Optional Explainability (may need compatibility adjustments)
+grad-cam>=1.4.8  # For XAI/attention visualization (optional)
+einops>=0.7.0  # Tensor operations for flexible reshaping
+
+# Performance & Utilities  
+accelerate>=0.20.0  # Distributed training utilities
+tqdm>=4.66.0  # Progress bars for training
+
+# Development (optional)
+# jupyter>=1.0.0  # For notebooks
+# matplotlib>=3.8.0  # For plotting
+# tensorboard>=2.14.0  # Training visualization
